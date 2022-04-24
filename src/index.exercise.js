@@ -26,6 +26,7 @@ function App() {
  */
 
 
+/* 
 // Extra 1
 function App() {
   const [openModal, setOpenModal] = React.useState('none')
@@ -51,6 +52,82 @@ function App() {
     </>
   )
 }
+ */
+
+
+function LoginForm({ onSubmit, buttonText }) {
+  const [username, setUsername] = React.useState('')
+  const [password, setPassword] = React.useState('')
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    
+    const description = buttonText.toLowerCase()
+    const formData = {
+      username,
+      password
+    }
+    
+    onSubmit(description, formData)
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="username">Username</label>
+        <input id="username" type="text" value={username} onChange={e => setUsername(e.target.value)} />
+      </div>
+      <div>
+        <label htmlFor="password">Password</label>
+      <input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)}/>
+      </div>
+      <div>
+        <button type="submit">{buttonText}</button>
+      </div>
+    </form>
+  )
+}
+
+// Extra 2
+// Go to see the final version too
+function App() {
+  const [openModal, setOpenModal] = React.useState('none')
+
+  function handleSubmit(description, formData) {
+    console.log(description, formData)
+  }
+
+  return (
+    <>
+      <Logo  width="80" height="80" />
+
+      <h1>Bookshelf</h1>
+
+      <Dialog aria-label="Login form" isOpen={openModal === 'login'}>
+        <div>
+          <button onClick={() => setOpenModal('none')}>Close</button>
+        </div>
+        <h3>Login</h3>
+        <LoginForm onSubmit={handleSubmit} buttonText="Login" />
+      </Dialog>
+      <div>
+        <button onClick={() => setOpenModal('login')}>Login</button>
+      </div>
+
+      <Dialog aria-label="Registration form" isOpen={openModal === 'register'}>
+        <div>
+          <button onClick={() => setOpenModal('none')}>Close</button>
+        </div>
+        <h3>Register</h3>
+        <LoginForm onSubmit={handleSubmit} buttonText="Register" />
+      </Dialog>
+      <div>
+        <button onClick={() => setOpenModal('register')}>Register</button>
+      </div>
+    </>
+  )
+}
+
 
 
 // 🐨 use createRoot to render the <App /> to the root element
