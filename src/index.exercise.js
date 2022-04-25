@@ -44,7 +44,7 @@ function LoginForm({onSubmit, submitButton}) {
     <form onSubmit={handleSubmit}>
       {/* 🐨 these div elements could be a FormGroup you create in components/lib */}
       {/* 🐨 and the inputs elements could be custom styled Input components too */}
-      <div>
+      {/* <div>
         <label htmlFor="username">Username</label>
         <input id="username" />
       </div>
@@ -52,6 +52,15 @@ function LoginForm({onSubmit, submitButton}) {
         <label htmlFor="password">Password</label>
         <input id="password" type="password" />
       </div>
+      <div>{React.cloneElement(submitButton, {type: 'submit'})}</div> */}
+      <FormGroup>
+        <label htmlFor="username">Username</label>
+        <Input id="username" />
+      </FormGroup>
+      <FormGroup>
+        <label htmlFor="password">Password</label>
+        <Input id="password" type="password" />
+      </FormGroup>
       <div>{React.cloneElement(submitButton, {type: 'submit'})}</div>
     </form>
   )
