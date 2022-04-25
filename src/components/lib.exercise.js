@@ -2,6 +2,8 @@ import styled from '@emotion/styled/macro'
 import {Dialog as ReachDialog} from '@reach/dialog'
 import { base, gray, gray10, indigo, text } from 'styles/colors'
 import * as mq from 'styles/media-queries'
+import {FaSpinner} from 'react-icons/fa'
+import { keyframes } from '@emotion/core'
 
 // 🐨 create a button styled component here called "Button"
 // make it look nice and allow it to support a "variant" prop which can be
@@ -106,4 +108,16 @@ const Dialog = styled(ReachDialog)({
   },
 })
 
-export {CircleButton, Dialog, Button, Input, FormGroup}
+
+// Go to see the final for better implementation
+const spin = keyframes`
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
+`
+
+const Spinner = styled(FaSpinner)({
+  animation: `${spin} 1s ease infinite`
+})
+
+
+export {CircleButton, Dialog, Button, Input, FormGroup, Spinner}
