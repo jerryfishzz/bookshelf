@@ -9,8 +9,12 @@ import {BookRow} from './components/book-row'
 import { useEffect, useState } from 'react'
 import { client } from 'utils/api-client'
 import { danger } from 'styles/colors'
+import { useAsync } from 'utils/hooks'
 // 🐨 import the client from './utils/api-client'
 
+
+/* 
+// Exercise & extra 1
 function DiscoverBooksScreen() {
   // 🐨 add state for status ('idle', 'loading', or 'success'), data, and query
   const [status, setStatus] = useState('idle')
@@ -130,5 +134,94 @@ function DiscoverBooksScreen() {
     </div>
   )
 }
+ */
+
+
+// Extra 2
+function DiscoverBooksScreen() {
+  const [query, setQuery] = useState('')
+  const [queried, setQueried] = useState(false)
+
+  const {
+    data, 
+    error, 
+    run, 
+    isLoading, 
+    isError, 
+    isSuccess,
+  } = useAsync()
+
+  useEffect(() => {
+    if (!queried) return
+
+    const endpoint = `books?query=${encodeURIComponent(query)}`
+    run(client(endpoint))
+  }, [queried, query, run])
+
+  function handleSearchSubmit(event) {
+    event.preventDefault()
+    setQueried(true)
+    setQuery(event.target.elements.search.value)
+    console.log(event.target.elements.search.value)
+  }
+
+  return (
+    <div
+      css={{maxWidth: 800, margin: 'auto', width: '90vw', padding: '40px 0'}}
+    >
+      <form onSubmit={handleSearchSubmit}>
+        <Input
+          placeholder="Search books..."
+          id="search"
+          css={{width: '100%'}}
+        />
+        <Tooltip label="Search Books">
+          <label htmlFor="search">
+            <button
+              type="submit"
+              css={{
+                border: '0',
+                position: 'relative',
+                marginLeft: '-35px',
+                background: 'transparent',
+              }}
+            >
+              {isLoading 
+                ? <Spinner /> 
+                : isError
+                  ? <FaTimes aria-label="error" css={{color: danger}} />
+                  : <FaSearch aria-label="search" />}
+            </button>
+          </label>
+        </Tooltip>
+      </form>
+
+      {
+        isError ? (
+          <div css={{color: danger}}>
+            <p>There was an error:</p>
+            <pre>{error.message}</pre>
+          </div>
+        ) : null
+      }
+
+      {isSuccess ? (
+        data?.books?.length ? (
+          <BookListUL css={{marginTop: 20}}>
+            {data.books.map(book => (
+              <li key={book.id} aria-label={book.title}>
+                <BookRow key={book.id} book={book} />
+              </li>
+            ))}
+          </BookListUL>
+        ) : (
+          <p>No books found. Try another search.</p>
+        )
+      ) : null}
+    </div>
+  )
+}
+
+
 
 export {DiscoverBooksScreen}
