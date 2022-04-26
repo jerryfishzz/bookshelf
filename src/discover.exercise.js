@@ -3,11 +3,12 @@ import {jsx} from '@emotion/core'
 
 import './bootstrap'
 import Tooltip from '@reach/tooltip'
-import {FaSearch} from 'react-icons/fa'
+import {FaSearch, FaTimes} from 'react-icons/fa'
 import {Input, BookListUL, Spinner} from './components/lib'
 import {BookRow} from './components/book-row'
 import { useEffect, useState } from 'react'
 import { client } from 'utils/api-client'
+import { danger } from 'styles/colors'
 // 🐨 import the client from './utils/api-client'
 
 function DiscoverBooksScreen() {
@@ -23,6 +24,8 @@ function DiscoverBooksScreen() {
   // user has submitted the form, so you'll need a boolean for that as well
   // 💰 I called it "queried"
   const [queried, setQueried] = useState(false)
+
+  const [error, setError] = useState('')
 
   // 🐨 Add a useEffect callback here for making the request with the
   // client and updating the status and data.
@@ -43,7 +46,8 @@ function DiscoverBooksScreen() {
       })
       .catch(err => {
         console.log(err)
-        setStatus('idle')
+        setStatus('failed')
+        setError(err)
         setQueried(false)
       })
 
@@ -54,6 +58,8 @@ function DiscoverBooksScreen() {
   // const isSuccess = false
   const isLoading = status === 'loading'
   const isSuccess = status === 'success'
+
+  const isError = status === 'failed'
 
   function handleSearchSubmit(event) {
     // 🐨 call preventDefault on the event so you don't get a full page reload
@@ -89,11 +95,24 @@ function DiscoverBooksScreen() {
                 background: 'transparent',
               }}
             >
-              {isLoading ? <Spinner /> : <FaSearch aria-label="search" />}
+              {isLoading 
+                ? <Spinner /> 
+                : isError
+                  ? <FaTimes aria-label="error" css={{color: danger}} />
+                  : <FaSearch aria-label="search" />}
             </button>
           </label>
         </Tooltip>
       </form>
+
+      {
+        isError ? (
+          <div css={{color: danger}}>
+            <p>There was an error:</p>
+            <pre>{error.message}</pre>
+          </div>
+        ) : null
+      }
 
       {isSuccess ? (
         data?.books?.length ? (

@@ -14,6 +14,7 @@ function client(endpoint, customConfig = {}) {
   return window
     .fetch(`${process.env.REACT_APP_API_URL}/${endpoint}`, config)
     .then(async response => {
+      console.log(response)
       const data = await response.json()
       if (response.ok) {
         return data
